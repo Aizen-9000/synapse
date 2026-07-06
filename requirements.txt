@@ -12,4 +12,5 @@ rich==13.8.1
 # PostgreSQL driver for Render deployment
 # SQLite is used locally, PostgreSQL on Render
 # SQLAlchemy handles both automatically via DATABASE_URL
-psycopg
+SQLAlchemy>=2.0
+psycopg[binary]
