@@ -14,3 +14,4 @@ rich==13.8.1
 # SQLAlchemy handles both automatically via DATABASE_URL
 SQLAlchemy>=2.0
 psycopg[binary]
+setuptools==81.0.0
