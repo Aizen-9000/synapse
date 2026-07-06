@@ -41,5 +41,5 @@ def get_db():
 
 
 def init_db():
-    from synapse_auth import models  # noqa
+    import models  # noqa
     Base.metadata.create_all(bind=engine)
