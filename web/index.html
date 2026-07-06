@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Synapse — Get Started</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    :root {
+      --bg: #07070F; --surface: #0E0E1C; --card: #131325;
+      --border: #1E1E38; --violet: #7B3FE4; --glow: #A66EF5;
+      --accent: #C4ABFF; --text: #EEEAFF; --muted: #7A7A9D;
+      --green: #23C55E; --red: #EF4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Nav */
+    nav { padding: 18px 40px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+    .nav-logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, #7B3FE4, #A66EF5); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+    .nav-name { font-weight: 700; font-size: 16px; }
+
+    /* Main */
+    main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 60px 20px; }
+    .container { width: 100%; max-width: 900px; display: flex; gap: 60px; align-items: flex-start; flex-wrap: wrap; }
+
+    /* Left: pitch */
+    .pitch { flex: 1 1 320px; }
+    .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); background: rgba(123,63,228,0.12); border: 1px solid rgba(123,63,228,0.25); border-radius: 20px; padding: 4px 12px; display: inline-block; margin-bottom: 20px; }
+    h1 { font-size: clamp(28px, 4vw, 44px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .gradient { background: linear-gradient(135deg, #C4ABFF, #A66EF5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sub { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; max-width: 380px; }
+    .features { display: flex; flex-direction: column; gap: 12px; }
+    .feature { display: flex; gap: 12px; align-items: flex-start; }
+    .feature-icon { width: 28px; height: 28px; border-radius: 8px; background: rgba(123,63,228,0.12); border: 1px solid rgba(123,63,228,0.2); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+    .feature-text { font-size: 13.5px; line-height: 1.6; }
+    .feature-text strong { color: var(--text); display: block; font-size: 13px; margin-bottom: 1px; }
+    .feature-text span { color: var(--muted); }
+
+    /* Plans */
+    .plans { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+    .plan-card { flex: 1 1 120px; padding: 16px; background: var(--card); border: 2px solid var(--border); border-radius: 12px; cursor: pointer; transition: all 0.15s; text-align: center; }
+    .plan-card:hover { border-color: var(--violet); }
+    .plan-card.selected { border-color: var(--violet); background: rgba(123,63,228,0.08); }
+    .plan-price { font-size: 22px; font-weight: 700; margin-bottom: 2px; }
+    .plan-price span { font-size: 13px; font-weight: 400; color: var(--muted); }
+    .plan-name { font-size: 12px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; }
+    .plan-desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* Right: form */
+    .form-card { flex: 1 1 320px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; }
+    .form-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .form-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+
+    .field { margin-bottom: 16px; }
+    label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.04em; }
+    input { width: 100%; padding: 11px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 14px; transition: border-color 0.15s; outline: none; }
+    input:focus { border-color: var(--violet); }
+    input::placeholder { color: var(--muted); }
+
+    .submit-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #7B3FE4, #A66EF5); border: none; border-radius: 10px; color: white; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+    .submit-btn:hover { box-shadow: 0 8px 28px rgba(123,63,228,0.35); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+    .divider hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+    .divider span { font-size: 11px; color: var(--muted); }
+
+    .login-link { text-align: center; font-size: 13px; color: var(--muted); }
+    .login-link a { color: var(--accent); text-decoration: none; cursor: pointer; }
+    .login-link a:hover { text-decoration: underline; }
+
+    /* State screens */
+    .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; display: none; line-height: 1.5; }
+    .alert.error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: var(--red); }
+    .alert.success { background: rgba(35,197,94,0.08); border: 1px solid rgba(35,197,94,0.2); color: var(--green); }
+    .alert.visible { display: block; }
+
+    /* License key display */
+    .license-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin: 16px 0; }
+    .license-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+    .license-key { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); word-break: break-all; line-height: 1.6; }
+    .copy-btn { width: 100%; padding: 9px; background: rgba(123,63,228,0.12); border: 1px solid rgba(123,63,228,0.25); border-radius: 8px; color: var(--accent); font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: all 0.15s; }
+    .copy-btn:hover { background: rgba(123,63,228,0.2); }
+
+    @media (max-width: 640px) {
+      .container { gap: 40px; }
+      nav { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">S</div>
+  <span class="nav-name">Synapse</span>
+</nav>
+
+<main>
+  <div class="container">
+
+    <!-- Pitch -->
+    <div class="pitch">
+      <div class="eyebrow">Local-first AI Agent</div>
+      <h1>AI that runs<br /><span class="gradient">on your device.</span></h1>
+      <p class="sub">No cloud. No token limits. No data leaving your machine. Synapse automates your workflows entirely locally.</p>
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">📁</div>
+          <div class="feature-text">
+            <strong>File & system control</strong>
+            <span>Read, organize, and manage files with natural language.</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">⚙️</div>
+          <div class="feature-text">
+            <strong>Workflow automation</strong>
+            <span>Schedule tasks, run scripts, automate repetitive work.</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔒</div>
+          <div class="feature-text">
+            <strong>100% private</strong>
+            <span>Everything stays on your device. No cloud calls after login.</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🧠</div>
+          <div class="feature-text">
+            <strong>Gets smarter over time</strong>
+            <span>Learns from how you work. Improves with every user.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-card">
+
+      <!-- Signup view -->
+      <div id="signup-view">
+        <div class="form-title">Get started</div>
+        <div class="form-sub">Create your account and choose a plan. You'll be charged after account creation.</div>
+
+        <!-- Plan selector -->
+        <div class="plans">
+          <div class="plan-card selected" data-plan="basic" onclick="selectPlan('basic')">
+            <div class="plan-price">₹299<span>/mo</span></div>
+            <div class="plan-name">Basic</div>
+            <div class="plan-desc">For individuals</div>
+          </div>
+          <div class="plan-card" data-plan="pro" onclick="selectPlan('pro')">
+            <div class="plan-price">₹599<span>/mo</span></div>
+            <div class="plan-name">Pro</div>
+            <div class="plan-desc">More tools + priority</div>
+          </div>
+        </div>
+
+        <div id="signup-alert" class="alert"></div>
+
+        <div class="field">
+          <label>Full name</label>
+          <input id="name" type="text" placeholder="Your name" />
+        </div>
+        <div class="field">
+          <label>Email address</label>
+          <input id="email" type="email" placeholder="you@example.com" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="password" type="password" placeholder="Min. 8 characters" />
+        </div>
+
+        <button class="submit-btn" id="signup-btn" onclick="handleSignup()">
+          Continue to payment →
+        </button>
+
+        <div class="divider"><hr /><span>already have an account?</span><hr /></div>
+        <div class="login-link"><a onclick="showLogin()">Log in to get your license key</a></div>
+      </div>
+
+      <!-- Login view -->
+      <div id="login-view" style="display:none">
+        <div class="form-title">Welcome back</div>
+        <div class="form-sub">Log in to retrieve your license key for the Synapse desktop app.</div>
+
+        <div id="login-alert" class="alert"></div>
+
+        <div class="field">
+          <label>Email address</label>
+          <input id="login-email" type="email" placeholder="you@example.com" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="login-password" type="password" placeholder="Your password" />
+        </div>
+
+        <button class="submit-btn" id="login-btn" onclick="handleLogin()">
+          Get my license key
+        </button>
+
+        <div class="divider"><hr /><span>new here?</span><hr /></div>
+        <div class="login-link"><a onclick="showSignup()">Create an account</a></div>
+      </div>
+
+      <!-- Success / license key view -->
+      <div id="success-view" style="display:none">
+        <div style="font-size:28px; margin-bottom:12px;">✓</div>
+        <div class="form-title" style="color:var(--green)">License activated</div>
+        <div class="form-sub">Copy your license key and paste it into the Synapse desktop app on first launch.</div>
+
+        <div class="license-box">
+          <div class="license-label">Your license key</div>
+          <div class="license-key" id="license-display">—</div>
+          <button class="copy-btn" onclick="copyKey()">Copy license key</button>
+        </div>
+
+        <div style="font-size:12px; color:var(--muted); line-height:1.6; margin-top:12px;">
+          Keep this key safe. You can retrieve it anytime by logging in here.
+          This key is valid for 30 days and auto-refreshes inside Synapse.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+  const AUTH_SERVER = 'http://localhost:9000';  // Change to your deployed URL
+  let selectedPlan  = 'basic';
+  let licenseKey    = '';
+
+  function selectPlan(plan) {
+    selectedPlan = plan;
+    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+    document.querySelector(`[data-plan="${plan}"]`).classList.add('selected');
+  }
+
+  function showAlert(id, msg, type) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = `alert ${type} visible`;
+  }
+
+  function clearAlert(id) {
+    const el = document.getElementById(id);
+    el.className = 'alert';
+  }
+
+  function showLogin()  { document.getElementById('signup-view').style.display='none'; document.getElementById('login-view').style.display='block'; }
+  function showSignup() { document.getElementById('login-view').style.display='none'; document.getElementById('signup-view').style.display='block'; }
+
+  function showSuccess(token) {
+    licenseKey = token;
+    document.getElementById('license-display').textContent = token;
+    document.getElementById('signup-view').style.display = 'none';
+    document.getElementById('login-view').style.display  = 'none';
+    document.getElementById('success-view').style.display = 'block';
+  }
+
+  function copyKey() {
+    navigator.clipboard.writeText(licenseKey).then(() => {
+      document.querySelector('.copy-btn').textContent = '✓ Copied!';
+      setTimeout(() => { document.querySelector('.copy-btn').textContent = 'Copy license key'; }, 2000);
+    });
+  }
+
+  async function handleSignup() {
+    clearAlert('signup-alert');
+    const name  = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const pass  = document.getElementById('password').value;
+
+    if (!email || !pass) return showAlert('signup-alert', 'Email and password are required.', 'error');
+    if (pass.length < 8) return showAlert('signup-alert', 'Password must be at least 8 characters.', 'error');
+
+    const btn = document.getElementById('signup-btn');
+    btn.disabled = true; btn.textContent = 'Creating account…';
+
+    try {
+      // Step 1: Create account
+      const signupRes = await fetch(`${AUTH_SERVER}/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass, name, plan: selectedPlan }),
+      });
+      const signupData = await signupRes.json();
+      if (!signupRes.ok) throw new Error(signupData.detail || 'Signup failed');
+
+      btn.textContent = 'Opening payment…';
+
+      // Step 2: Create Razorpay subscription
+      const subRes = await fetch(`${AUTH_SERVER}/auth/create-subscription`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, plan: selectedPlan }),
+      });
+      const subData = await subRes.json();
+      if (!subRes.ok) throw new Error(subData.detail || 'Payment setup failed');
+
+      // Step 3: Open Razorpay Checkout
+      const rzp = new Razorpay({
+        key: subData.key_id,
+        subscription_id: subData.subscription_id,
+        name: 'Synapse',
+        description: `${selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1)} Plan`,
+        prefill: { email, name },
+        theme: { color: '#7B3FE4' },
+        handler: async function(response) {
+          // Payment success — log in to get the token
+          btn.textContent = 'Activating license…';
+          await new Promise(r => setTimeout(r, 2000)); // wait for webhook to fire
+          await doLogin(email, pass);
+        },
+        modal: {
+          ondismiss: function() {
+            btn.disabled = false;
+            btn.textContent = 'Continue to payment →';
+          }
+        }
+      });
+      rzp.open();
+
+    } catch (err) {
+      showAlert('signup-alert', err.message, 'error');
+      btn.disabled = false;
+      btn.textContent = 'Continue to payment →';
+    }
+  }
+
+  async function handleLogin() {
+    clearAlert('login-alert');
+    const email = document.getElementById('login-email').value.trim();
+    const pass  = document.getElementById('login-password').value;
+    if (!email || !pass) return showAlert('login-alert', 'Email and password are required.', 'error');
+
+    const btn = document.getElementById('login-btn');
+    btn.disabled = true; btn.textContent = 'Logging in…';
+
+    try {
+      await doLogin(email, pass);
+    } catch (err) {
+      showAlert('login-alert', err.message, 'error');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Get my license key';
+    }
+  }
+
+  async function doLogin(email, password) {
+    const res = await fetch(`${AUTH_SERVER}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Login failed');
+    showSuccess(data.token);
+  }
+</script>
+</body>
+</html>

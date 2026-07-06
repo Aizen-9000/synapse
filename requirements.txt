@@ -1,0 +1,15 @@
+fastapi==0.115.0
+uvicorn==0.30.6
+sqlalchemy==2.0.35
+pyjwt==2.9.0
+bcrypt==4.2.0
+python-dotenv==1.0.1
+razorpay==1.4.1
+python-multipart==0.0.12
+httpx==0.27.2
+rich==13.8.1
+
+# PostgreSQL driver for Render deployment
+# SQLite is used locally, PostgreSQL on Render
+# SQLAlchemy handles both automatically via DATABASE_URL
+psycopg2-binary==2.9.9
